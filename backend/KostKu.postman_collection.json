@@ -1,0 +1,622 @@
+{
+  "info": {
+    "name": "KostKu Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "kost_id",
+      "value": "1"
+    },
+    {
+      "key": "room_id",
+      "value": "1"
+    },
+    {
+      "key": "photo_id",
+      "value": "1"
+    },
+    {
+      "key": "contact_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo User\",\n  \"email\": \"demo@kostku.test\",\n  \"password\": \"password123\",\n  \"phone\": \"081234567890\",\n  \"role\": \"seeker\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login (sets token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json && json.token) {",
+                  "  pm.collectionVariables.set('token', json.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"seeker1@kostku.test\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/user"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Facilities",
+      "item": [
+        {
+          "name": "List facilities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/facilities"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Kosts",
+      "item": [
+        {
+          "name": "Index kosts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/kosts"
+          }
+        },
+        {
+          "name": "My kosts (owner only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/my-kosts"
+          }
+        },
+        {
+          "name": "Show kost",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/kosts/{{kost_id}}"
+          }
+        },
+        {
+          "name": "Create kost (owner only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/kosts",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kost Baru\",\n  \"description\": \"Dekat kampus dan minimarket\",\n  \"address\": \"Jl. Contoh No. 1\",\n  \"city\": \"Bandung\",\n  \"province\": \"Jawa Barat\",\n  \"latitude\": -6.8936,\n  \"longitude\": 107.6104,\n  \"type\": \"campur\",\n  \"facility_ids\": [1,2,3]\n}"
+            }
+          }
+        },
+        {
+          "name": "Update kost (owner only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/kosts/{{kost_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Update deskripsi kost\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete kost (owner only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/kosts/{{kost_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rooms",
+      "item": [
+        {
+          "name": "List rooms by kost",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/kosts/{{kost_id}}/rooms"
+          }
+        },
+        {
+          "name": "Create room (owner only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/kosts/{{kost_id}}/rooms",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Kamar A\",\n  \"price\": 1500000,\n  \"is_available\": true,\n  \"size\": 12,\n  \"capacity\": 1,\n  \"description\": \"Kamar terang dan nyaman\",\n  \"facility_ids\": [1,4,5]\n}"
+            }
+          }
+        },
+        {
+          "name": "Show room",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/kosts/{{kost_id}}/rooms/{{room_id}}"
+          }
+        },
+        {
+          "name": "Update room (owner only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/kosts/{{kost_id}}/rooms/{{room_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 1750000,\n  \"is_available\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete room (owner only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/kosts/{{kost_id}}/rooms/{{room_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Room Photos",
+      "item": [
+        {
+          "name": "Upload photo (multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/rooms/{{room_id}}/photos",
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "photo",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "is_primary",
+                  "type": "text",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete photo",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/room-photos/{{photo_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "item": [
+        {
+          "name": "List favorites",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/favorites"
+          }
+        },
+        {
+          "name": "Toggle favorite",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/favorites",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kost_id\": {{kost_id}}\n}"
+            }
+          }
+        },
+        {
+          "name": "Remove favorite",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/favorites/{{kost_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contacts",
+      "item": [
+        {
+          "name": "List contacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/contacts"
+          }
+        },
+        {
+          "name": "Create contact (seeker only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/contacts",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kost_id\": {{kost_id}},\n  \"message\": \"Halo, apakah ada kamar kosong?\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update contact status (owner only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/contacts/{{contact_id}}/status",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"responded\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "item": [
+        {
+          "name": "Nearby (Haversine)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/search/nearby?latitude=-6.8936&longitude=107.6104&radius=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "search",
+                "nearby"
+              ],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "-6.8936"
+                },
+                {
+                  "key": "longitude",
+                  "value": "107.6104"
+                },
+                {
+                  "key": "radius",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/search/filter?city=Bandung&type=campur&min_price=500000&max_price=3000000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "search",
+                "filter"
+              ],
+              "query": [
+                {
+                  "key": "city",
+                  "value": "Bandung"
+                },
+                {
+                  "key": "type",
+                  "value": "campur"
+                },
+                {
+                  "key": "min_price",
+                  "value": "500000"
+                },
+                {
+                  "key": "max_price",
+                  "value": "3000000"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

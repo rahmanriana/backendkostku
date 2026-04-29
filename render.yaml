@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: kostku-backend
+    runtime: docker
+    plan: free
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: 'false'
+      - key: APP_KEY
+        sync: false
+      - key: APP_URL
+        sync: false
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kostku-db
+          property: connectionString
+      - key: SANCTUM_STATEFUL_DOMAINS
+        value: localhost:3000,localhost:8080
+      - key: RUN_MIGRATIONS
+        value: 'true'
+      - key: RUN_SEEDERS
+        value: 'false'
+
+databases:
+  - name: kostku-db
+    databaseName: kostku
+    user: kostku
